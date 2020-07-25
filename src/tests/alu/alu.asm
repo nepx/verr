@@ -388,13 +388,49 @@ jnz fail
 inc dx
 %endmacro
 
-%macro EbIbR 2
-mov ah, 0x55
+%macro EbIb2 2
+mov byte [0], 0x55
 ; opcode
 db 0x80
-; ModR/M: c4 
-db 0xC4 | (%1 shl 3)
+; modrm
+db 0x06
+; displacement
+dw 0x0000
+; immediate
+db 0xAA
 cmp byte [0], %2
+jnz fail
+inc dx
+%endmacro
+
+%macro EbIbR 2
+mov bl, 0x55
+; opcode -- 0x80
+db 0x80
+; ModR/M: c4 
+;  mod: 3 (ah)
+;  r/m: 3 (bl)
+;  reg: (user-specified)
+db 0xC3 | %1
+; Immediate
+db 0xAA
+cmp bl, %2
+jnz fail
+inc dx
+%endmacro
+
+%macro EbIbR2 2
+mov bl, 0x55
+; opcode -- 0x82 (it's an alias of 0x80)
+db 0x82
+; ModR/M: c4 
+;  mod: 3 (ah)
+;  r/m: 3 (bl)
+;  reg: (user-specified)
+db 0xC3 | %1
+; Immediate
+db 0xAA
+cmp bl, %2
 jnz fail
 inc dx
 %endmacro
@@ -406,6 +442,48 @@ cmp word [0], %2
 jnz fail
 inc dx
 %endmacro
+
+%macro EwIwR 2
+mov bx, 0x5555
+; opcode
+db 0x81
+; ModR/M: c4 
+;  mod: 3 (ah)
+;  r/m: 3 (bl)
+;  reg: (user-specified)
+db 0xC3 | %1
+; Immediate
+dw 0xAAAA
+cmp bx, %2
+jnz fail
+inc dx
+%endmacro
+
+%macro EwIb 2
+mov word [0], 0x5555
+%1 word [0], 0xFFAA
+cmp word [0], %2
+jnz fail
+inc dx
+%endmacro
+
+%macro EwIbR 2
+mov bx, 0x5555
+; opcode
+db 0x83
+; ModR/M: c4 
+;  mod: 3 (ah)
+;  r/m: 3 (bl)
+;  reg: (user-specified)
+db 0xC3 | %1
+; Immediate (sign-extended to 0xFFAA)
+db 0xAA
+into 
+cmp bx, %2
+jnz fail
+inc dx
+%endmacro
+
 %macro EdId 2
 mov dword [0], 0x55555555
 %1 dword [0], 0xAAAAAAAA
@@ -413,6 +491,72 @@ cmp dword [0], %2
 jnz fail
 inc dx
 %endmacro
+
+%macro EdIb 2
+mov dword [0], 0x55555555
+%1 dword [0], 0xFFFFFFAA
+cmp dword [0], %2
+jnz fail
+inc dx
+%endmacro
+
+%macro EdIdR 2
+mov ebx, 0x55555555
+; prefix
+db 0x66
+; opcode
+db 0x81
+; ModR/M: c4 
+;  mod: 3 (ah)
+;  r/m: 3 (bl)
+;  reg: (user-specified)
+db 0xC3 | %1
+; Immediate
+dd 0xAAAAAAAA
+cmp ebx, %2
+jnz fail
+inc dx
+%endmacro
+
+%macro EdIb 2
+mov dword [0], 0x55555555
+%1 dword [0], 0xFFFFFFAA
+cmp dword [0], %2
+jnz fail
+inc dx
+%endmacro
+
+%macro EwIbR 2
+mov ebx, 0x55555555
+; opcode
+db 0x83
+; ModR/M: c4 
+;  mod: 3 (ah)
+;  r/m: 3 (bl)
+;  reg: (user-specified)
+db 0xC3 | %1
+; Immediate (sign-extended to 0xFFFFFFAA)
+db 0xAA
+cmp ebx, %2
+jnz fail
+inc dx
+%endmacro
+
+AddRes16_2 equ (0x5555+0xFFAA)&0xFFFF
+AddRes32_2 equ (0x55555555+0xFFFFFFAA)&0xFFFFFFFF
+into
+EbIb add,AddRes8 ; 0x80
+EbIbR 0x00,AddRes8 ; 0x81
+EbIb2 0x00,AddRes8 ; 0x82
+EbIbR2 0x00,AddRes8 ; 0x83
+EwIw add,AddRes16 ; 0x84
+EwIwR 0x00,AddRes16 ; 0x85
+EwIb add,AddRes16_2 ; 0x86
+EwIbR 0x00,AddRes16_2 ; 0x87
+EdId add,AddRes32 ; 0x88
+EdIdR 0x00,AddRes32 ; 0x89
+EdIb add,AddRes32_2 ; 0x8A
+EdIb add,AddRes32_2 ; 0x8B
 
 pop ds
 
