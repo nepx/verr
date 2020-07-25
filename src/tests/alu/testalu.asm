@@ -35,7 +35,7 @@ TESTID:
 
 %ifdef CARRY_TEST
     stc
-    mov vbx, vax
+    mov vax, vbx
     TESTINSN vax, vcx
     getflags dx
     inc bp

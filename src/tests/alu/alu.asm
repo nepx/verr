@@ -702,7 +702,7 @@ fail:
     cli
     hlt
 
-; Print, no carry tested. Format string should be in vsi
+; Print, no carry tested. Format string should be in si
 print_nc8_16: 
     push dx ; flags
     push word 0
