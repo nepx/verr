@@ -687,11 +687,340 @@ EdIbR 0x38,CmpRes32 ; 0xFB
 
 add di, 4 ; Skip 0xFC to 0xFF
 
+%define NSHIFT 3
+%macro s_EbIb 2
+mov byte [0], 0x12
+clc
+%1 byte [0], NSHIFT
+cmp byte [0], %2
+jnz fail
+inc di
+%endmacro
+
+%macro s_EbIbR 2
+mov ah, 0x12
+clc
+%1 ah, NSHIFT
+cmp ah, %2
+jnz fail
+inc di
+%endmacro
+
+%macro s_EbCL 2
+mov byte [0], 0x12
+mov cl, NSHIFT
+clc
+%1 byte [0], cl
+cmp byte [0], %2
+jnz fail
+inc di
+%endmacro
+
+%macro s_EbCLR 2
+mov ah, 0x12
+mov cl, NSHIFT
+clc
+%1 ah, cl
+cmp ah, %2
+jnz fail
+inc di
+%endmacro
+
+%macro s_Eb1 2
+mov byte [0], 0x12
+clc
+%1 byte [0], 1
+cmp byte [0], %2
+jnz fail
+inc di
+%endmacro
+
+%macro s_Eb1R 2
+mov ah, 0x12
+clc
+%1 ah, 1
+cmp ah, %2
+jnz fail
+inc di
+%endmacro
+
+%macro s_EwIb 2
+mov word [0], 0x1234
+clc
+%1 word [0], NSHIFT
+cmp word [0], %2
+jnz fail
+inc di
+%endmacro
+
+%macro s_EwIbR 2
+mov bx, 0x1234
+clc
+%1 bx, NSHIFT
+cmp bx, %2
+jnz fail
+inc di
+%endmacro
+
+%macro s_EwCL 2
+mov word [0], 0x1234
+mov cl, NSHIFT
+clc
+%1 word [0], cl
+cmp word [0], %2
+jnz fail
+inc di
+%endmacro
+
+%macro s_EwCLR 2
+mov bx, 0x1234
+mov cl, NSHIFT
+clc
+%1 bx, cl
+cmp bx, %2
+jnz fail
+inc di
+%endmacro
+
+%macro s_Ew1 2
+mov word [0], 0x1234
+clc
+%1 word [0], 1
+cmp word [0], %2
+jnz fail
+inc di
+%endmacro
+
+%macro s_Ew1R 2
+mov bx, 0x1234
+clc
+%1 bx, 1
+cmp bx, %2
+jnz fail
+inc di
+%endmacro
+
+%macro s_EdIb 2
+mov dword [0], 0x12345678
+clc
+%1 dword [0], NSHIFT
+cmp dword [0], %2
+jnz fail
+inc di
+%endmacro
+
+%macro s_EdIbR 2
+mov ebx, 0x12345678
+clc
+%1 ebx, NSHIFT
+cmp ebx, %2
+jnz fail
+inc di
+%endmacro
+
+%macro s_EdCL 2
+mov dword [0], 0x12345678
+mov cl, NSHIFT
+clc
+%1 dword [0], cl
+cmp dword [0], %2
+jnz fail
+inc di
+%endmacro
+
+%macro s_EdCLR 2
+mov ebx, 0x12345678
+mov cl, NSHIFT
+clc
+%1 ebx, cl
+cmp ebx, %2
+jnz fail
+inc di
+%endmacro
+
+%macro s_Ed1 2
+mov dword [0], 0x12345678
+clc
+%1 dword [0], 1
+cmp dword [0], %2
+jnz fail
+inc di
+%endmacro
+
+%macro s_Ed1R 2
+mov ebx, 0x12345678
+clc
+%1 ebx, 1
+cmp ebx, %2
+jnz fail
+inc di
+%endmacro
+
+RolRes8 equ 0x90
+RolRes8_1 equ 0x24
+RolRes16 equ 0x91A0
+RolRes16_1 equ 0x2468
+RolRes32 equ 0x91A2B3C0
+RolRes32_1 equ 0x2468ACF0
+s_EbIb rol,RolRes8 ; 0x100
+s_EbIbR rol,RolRes8 ; 0x101
+s_EbCL rol,RolRes8 ; 0x102
+s_EbCLR rol,RolRes8 ; 0x103
+s_Eb1 rol,RolRes8_1 ; 0x104
+s_Eb1R rol,RolRes8_1 ; 0x105
+s_EwIb rol,RolRes16 ; 0x106
+s_EwIbR rol,RolRes16 ; 0x107
+s_EwCL rol,RolRes16 ; 0x108
+s_EwCLR rol,RolRes16 ; 0x109
+s_Ew1 rol,RolRes16_1 ; 0x10A
+s_Ew1R rol,RolRes16_1 ; 0x10B
+s_EdIb rol,RolRes32 ; 0x10C
+s_EdIbR rol,RolRes32 ; 0x10D
+s_EdCL rol,RolRes32 ; 0x10E
+s_EdCLR rol,RolRes32 ; 0x10F
+s_Ed1 rol,RolRes32_1 ; 0x110
+s_Ed1R rol,RolRes32_1 ; 0x111
+
+RorRes8 equ 0x42
+RorRes8_1 equ 0x09
+RorRes16 equ 0x8246
+RorRes16_1 equ 0x091A
+RorRes32 equ 0x02468ACF
+RorRes32_1 equ 0x091A2B3C
+s_EbIb ror,RorRes8 ; 0x112
+s_EbIbR ror,RorRes8 ; 0x113
+s_EbCL ror,RorRes8 ; 0x114
+s_EbCLR ror,RorRes8 ; 0x115
+s_Eb1 ror,RorRes8_1 ; 0x116
+s_Eb1R ror,RorRes8_1 ; 0x117
+s_EwIb ror,RorRes16 ; 0x118
+s_EwIbR ror,RorRes16 ; 0x119
+s_EwCL ror,RorRes16 ; 0x11A
+s_EwCLR ror,RorRes16 ; 0x11B
+s_Ew1 ror,RorRes16_1 ; 0x11C
+s_Ew1R ror,RorRes16_1 ; 0x11D
+s_EdIb ror,RorRes32 ; 0x11E
+s_EdIbR ror,RorRes32 ; 0x11F
+s_EdCL ror,RorRes32 ; 0x120
+s_EdCLR ror,RorRes32 ; 0x121
+s_Ed1 ror,RorRes32_1 ; 0x122
+s_Ed1R ror,RorRes32_1 ; 0x123
+
+s_EbIb rcl,RolRes8 ; 0x124
+s_EbIbR rcl,RolRes8 ; 0x125
+s_EbCL rcl,RolRes8 ; 0x126
+s_EbCLR rcl,RolRes8 ; 0x127
+s_Eb1 rcl,RolRes8_1 ; 0x128
+s_Eb1R rcl,RolRes8_1 ; 0x129
+s_EwIb rcl,RolRes16 ; 0x12A
+s_EwIbR rcl,RolRes16 ; 0x12B
+s_EwCL rcl,RolRes16 ; 0x12C
+s_EwCLR rcl,RolRes16 ; 0x12D
+s_Ew1 rcl,RolRes16_1 ; 0x12E
+s_Ew1R rcl,RolRes16_1 ; 0x12F
+s_EdIb rcl,RolRes32 ; 0x130
+s_EdIbR rcl,RolRes32 ; 0x131
+s_EdCL rcl,RolRes32 ; 0x132
+s_EdCLR rcl,RolRes32 ; 0x133
+s_Ed1 rcl,RolRes32_1 ; 0x134
+s_Ed1R rcl,RolRes32_1 ; 0x135
+
+RcrRes8 equ 0x82
+RcrRes16 equ 0x246
+RcrRes32 equ 0x02468ACF
+s_EbIb rcr,RcrRes8 ; 0x136
+s_EbIbR rcr,RcrRes8 ; 0x137
+s_EbCL rcr,RcrRes8 ; 0x138
+s_EbCLR rcr,RcrRes8 ; 0x139
+s_Eb1 rcr,RorRes8_1 ; 0x13A
+s_Eb1R rcr,RorRes8_1 ; 0x13B
+s_EwIb rcr,RcrRes16 ; 0x13C
+s_EwIbR rcr,RcrRes16 ; 0x13D
+s_EwCL rcr,RcrRes16 ; 0x13E
+s_EwCLR rcr,RcrRes16 ; 0x13F
+s_Ew1 rcr,RorRes16_1 ; 0x140
+s_Ew1R rcr,RorRes16_1 ; 0x141
+s_EdIb rcr,RcrRes32 ; 0x142
+s_EdIbR rcr,RcrRes32 ; 0x143
+s_EdCL rcr,RcrRes32 ; 0x144
+s_EdCLR rcr,RcrRes32 ; 0x145
+s_Ed1 rcr,RorRes32_1 ; 0x146
+s_Ed1R rcr,RorRes32_1 ; 0x147
+
+ShlRes8 equ 0x90
+ShlRes8_1 equ 0x24
+ShlRes16 equ 0x91A0
+ShlRes16_1 equ 0x2468
+ShlRes32 equ 0x91A2B3C0
+ShlRes32_1 equ 0x2468ACF0
+s_EbIb shl,ShlRes8 ; 0x148
+s_EbIbR shl,ShlRes8 ; 0x149
+s_EbCL shl,ShlRes8 ; 0x14A
+s_EbCLR shl,ShlRes8 ; 0x14B
+s_Eb1 shl,ShlRes8_1 ; 0x14C
+s_Eb1R shl,ShlRes8_1 ; 0x14D
+s_EwIb shl,ShlRes16 ; 0x14E
+s_EwIbR shl,ShlRes16 ; 0x14F
+s_EwCL shl,ShlRes16 ; 0x150
+s_EwCLR shl,ShlRes16 ; 0x151
+s_Ew1 shl,ShlRes16_1 ; 0x152
+s_Ew1R shl,ShlRes16_1 ; 0x153
+s_EdIb shl,ShlRes32 ; 0x154
+s_EdIbR shl,ShlRes32 ; 0x155
+s_EdCL shl,ShlRes32 ; 0x156
+s_EdCLR shl,ShlRes32 ; 0x157
+s_Ed1 shl,ShlRes32_1 ; 0x158
+s_Ed1R shl,ShlRes32_1 ; 0x159
+
+ShrRes8 equ 2
+ShrRes8_1 equ 9
+ShrRes16 equ 0x0246
+ShrRes16_1 equ 0x091A
+ShrRes32 equ 0x02468ACF
+ShrRes32_1 equ 0x091A2B3C
+s_EbIb shr,ShrRes8 ; 0x15A
+s_EbIbR shr,ShrRes8 ; 0x15B
+s_EbCL shr,ShrRes8 ; 0x15C
+s_EbCLR shr,ShrRes8 ; 0x15D
+s_Eb1 shr,ShrRes8_1 ; 0x15E
+s_Eb1R shr,ShrRes8_1 ; 0x15F
+s_EwIb shr,ShrRes16 ; 0x160
+s_EwIbR shr,ShrRes16 ; 0x161
+s_EwCL shr,ShrRes16 ; 0x162
+s_EwCLR shr,ShrRes16 ; 0x163
+s_Ew1 shr,ShrRes16_1 ; 0x164
+s_Ew1R shr,ShrRes16_1 ; 0x165
+s_EdIb shr,ShrRes32 ; 0x166
+s_EdIbR shr,ShrRes32 ; 0x167
+s_EdCL shr,ShrRes32 ; 0x168
+s_EdCLR shr,ShrRes32 ; 0x169
+s_Ed1 shr,ShrRes32_1 ; 0x16A
+s_Ed1R shr,ShrRes32_1 ; 0x16B
+
+s_EbIb sar,ShrRes8 ; 0x15A
+s_EbIbR sar,ShrRes8 ; 0x15B
+s_EbCL sar,ShrRes8 ; 0x15C
+s_EbCLR sar,ShrRes8 ; 0x15D
+s_Eb1 sar,ShrRes8_1 ; 0x15E
+s_Eb1R sar,ShrRes8_1 ; 0x15F
+s_EwIb sar,ShrRes16 ; 0x160
+s_EwIbR sar,ShrRes16 ; 0x161
+s_EwCL sar,ShrRes16 ; 0x162
+s_EwCLR sar,ShrRes16 ; 0x163
+s_Ew1 sar,ShrRes16_1 ; 0x164
+s_Ew1R sar,ShrRes16_1 ; 0x165
+s_EdIb sar,ShrRes32 ; 0x166
+s_EdIbR sar,ShrRes32 ; 0x167
+s_EdCL sar,ShrRes32 ; 0x168
+s_EdCLR sar,ShrRes32 ; 0x169
+s_Ed1 sar,ShrRes32_1 ; 0x16A
+s_Ed1R sar,ShrRes32_1 ; 0x16B
+
 pop ds
 
 jmp begintest
 
-failstr: db 'alu 0x$2 failed', 0
+failstr: db 'alu 0x$4 failed', 0
 fail: 
     ; We failed the basic opcode tests
     pop ds
