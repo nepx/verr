@@ -765,6 +765,29 @@ begintest:
 %define TESTINSN sbb
 %include "testalu.asm"
 
+%undef CARRY_TEST
+
+%define TESTID and8
+%define TESTSTR "and8 $2&$2=$2 fl=$4"
+%define TESTINSN and
+%include "testalu.asm"
+
+%define TESTID sub8
+%define TESTSTR "sub8 $2-$2=$2 fl=$4"
+%define TESTINSN sub
+%include "testalu.asm"
+
+%define TESTID xor8
+%define TESTSTR "xor8 $2^$2=$2 fl=$4"
+%define TESTINSN xor
+%include "testalu.asm"
+
+%define TESTID cmp8
+%define TESTSTR "cmp8 $2-$2 <$2> fl=$4"
+%define TESTINSN cmp
+%include "testalu.asm"
+
+
 cli
 hlt
 
