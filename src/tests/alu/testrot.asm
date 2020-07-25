@@ -29,7 +29,9 @@ TESTID:
 
     ; ROR only modifies the CF/OF flags
     and dx, 0x801
-
+    push cx
+    and cl, 31 ; xxx -- correct? (no modulo?)
+    
     cmp cl, 1
     jz .done1
 
@@ -37,7 +39,7 @@ TESTID:
     and dx, ~0x800
 
 .done1:
-
+    pop cx
 %ifdef CARRY_TEST
     xor bp, bp
     call print_c
@@ -52,11 +54,14 @@ TESTID:
     getflags dx
 
     and dx, 0x801
+    push cx
+    and cl, 31 ; xxx -- correct? (no modulo?)
     cmp cl, 1
     jz .done2
     and dx, ~0x800
 
 .done2:
+    pop cx
     inc bp
     call print_c
 %endif

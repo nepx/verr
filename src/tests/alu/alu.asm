@@ -799,6 +799,38 @@ begintest:
 %define TESTINSN ror
 %include "testrot.asm"
 
+%define TESTID rol8
+%define TESTSTR "rol8 op1=$2 op2=$2 res=$2 fl=$4"
+%define TESTINSN rol
+%include "testrot.asm"
+
+%define CARRY_TEST
+%define TESTID rcr8
+%define TESTSTR "rcr8 cf=$1 op1=$2 op2=$2 res=$2 fl=$4"
+%define TESTINSN rcr
+%include "testrot.asm"
+
+%define TESTID rcl8
+%define TESTSTR "rcl8 cf=$1 op1=$2 op2=$2 res=$2 fl=$4"
+%define TESTINSN rcl
+%include "testrot.asm"
+
+%define TESTID shl8
+%define TESTSTR "shl8 op1=$2 op2=$2 res=$2 fl=$4"
+%define TESTINSN shl
+%include "testrot.asm"
+
+%define TESTID shr8
+%define TESTSTR "shr8 op1=$2 op2=$2 res=$2 fl=$4"
+%define TESTINSN shr
+%include "testrot.asm"
+
+%define CARRY_TEST
+%define TESTID sar8
+%define TESTSTR "sar8 cf=$1 op1=$2 op2=$2 res=$2 fl=$4"
+%define TESTINSN sar
+%include "testrot.asm"
+
 
 cli
 hlt
@@ -824,24 +856,24 @@ testcase8_op2:
     dd 0x55 ; shift-mask test, odd
 
 testcase8_ror_op1:
-    dd 0x7F
-    dd 0x80 ; tests OF condition
-    dd 0x01 ; tests OF condition
-    dd 0x5D
+    dd 0x80 ; tests OF condition, ROR
+    dd 0x01 ; tests OF condition, ROR and ROL
+    dd 0x02 ; tests OF condition, ROL
+    dd 0x34
     dd 0x6F
     dd 0x80
     dd 0x09
     dd 0xF5
 
 testcase8_ror_op2: 
+    dd 0
     dd 1
-    dd 0x25
-    dd 0x3B
-    dd 0x43
-    dd 0x5E
-    dd 0x96
-    dd 'H'
-    dd 'I'
+    dd 8
+    dd 9
+    dd 16
+    dd 17
+    dd 32
+    dd 0x41
 
 testcase16_op1:
     dd 0x1234 ; should check SZP
