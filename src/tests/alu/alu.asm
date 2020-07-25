@@ -21,7 +21,7 @@ clc
 %1 byte [0], ch
 cmp byte [0], %2
 jnz fail
-inc dx
+inc di
 %endmacro
 
 %macro GbEb 2
@@ -31,7 +31,7 @@ clc
 %1 ch, byte [0]
 cmp ch, %2
 jnz fail
-inc dx
+inc di
 %endmacro
 
 %macro EbGbR 2
@@ -47,7 +47,7 @@ db %1
 db 0xDE
 cmp dh, %2
 jnz fail
-inc dx
+inc di
 %endmacro
 
 %macro GbEbR 2
@@ -63,7 +63,7 @@ db %1 | 0x02
 db 0xDE
 cmp bl, %2
 jnz fail
-inc dx
+inc di
 %endmacro
 
 ; word tests
@@ -74,7 +74,7 @@ clc
 %1 word [0], cx
 cmp word [0], %2
 jnz fail
-inc dx
+inc di
 %endmacro
 
 %macro GwEw 2
@@ -84,7 +84,7 @@ clc
 %1 cx, word [0]
 cmp cx, %2
 jnz fail
-inc dx
+inc di
 %endmacro
 
 %macro EwGwR 2
@@ -100,7 +100,7 @@ db %1 | 0x01
 db 0xDE
 cmp si, %2
 jnz fail
-inc dx
+inc di
 %endmacro
 
 %macro GwEwR 2
@@ -116,7 +116,7 @@ db %1 | 0x03
 db 0xDE
 cmp bx, %2
 jnz fail
-inc dx
+inc di
 %endmacro
 
 ; dword tests
@@ -127,7 +127,7 @@ clc
 %1 dword [0], ecx
 cmp dword [0], %2
 jnz fail
-inc dx
+inc di
 %endmacro
 
 %macro GdEd 2
@@ -137,7 +137,7 @@ clc
 %1 ecx, dword [0]
 cmp ecx, %2
 jnz fail
-inc dx
+inc di
 %endmacro
 
 %macro EdGdR 2
@@ -155,7 +155,7 @@ db %1 | 0x01
 db 0xDE
 cmp esi, %2
 jnz fail
-inc dx
+inc di
 %endmacro
 
 %macro GdEdR 2
@@ -173,7 +173,7 @@ db %1 | 0x03
 db 0xDE
 cmp ebx, %2
 jnz fail
-inc dx
+inc di
 %endmacro
 
 ; +4/+5
@@ -183,7 +183,7 @@ mov al, 0x55
 %1 al, 0xAA
 cmp al, %2
 jnz fail
-inc dx
+inc di
 %endmacro
 
 %macro AXIw 2
@@ -191,7 +191,7 @@ mov ax, 0x5555
 %1 ax, 0xAAAA
 cmp ax, %2
 jnz fail
-inc dx
+inc di
 %endmacro
 
 %macro EAXId 2
@@ -199,10 +199,10 @@ mov eax, 0x55555555
 %1 eax, 0xAAAAAAAA
 cmp eax, %2
 jnz fail
-inc dx
+inc di
 %endmacro
 
-xor dx, dx ; test counter
+xor di, di ; test counter
 AddRes8 equ (0x55+0xAA)&0xFF
 AddRes16 equ (0x5555+0xAAAA)&0xFFFF
 AddRes32 equ (0x55555555+0xAAAAAAAA)&0xFFFFFFFF
@@ -224,7 +224,7 @@ GdEdR 0x00,AddRes32 ; B
 ALIb add,AddRes8 ; C
 AXIw add,AddRes16 ; D
 EAXId add,AddRes32 ; E
-inc dx ; F (never fail)
+inc di ; F (never fail)
 
 OrRes8 equ (0x55|0xAA)&0xFF
 OrRes16 equ (0x5555|0xAAAA)&0xFFFF
@@ -247,7 +247,7 @@ GdEdR 0x08,OrRes32 ; 0x1B
 ALIb or,OrRes8 ; 0x1C
 AXIw or,OrRes16 ; 0x1D
 EAXId or,OrRes32 ; 0x1E
-inc dx ; 0x1F (never fail)
+inc di ; 0x1F (never fail)
 
 ; +0/+2
 EbGb adc,AddRes8 ; 0x20
@@ -267,7 +267,7 @@ GdEdR 0x10,AddRes32 ; 0x2B
 ALIb adc,AddRes8 ; 0x2C
 AXIw adc,AddRes16 ; 0x2D
 EAXId adc,AddRes32 ; 0x2E
-inc dx ; 0x2F (never fail)
+inc di ; 0x2F (never fail)
 
 SubRes8 equ (0x55-0xAA)&0xFF
 SubRes16 equ (0x5555-0xAAAA)&0xFFFF
@@ -289,7 +289,7 @@ GdEdR 0x18,SubRes32 ; 0x3B
 ALIb sbb,SubRes8 ; 0x3C
 AXIw sbb,SubRes16 ; 0x3D
 EAXId sbb,SubRes32 ; 0x3E
-inc dx ; 0x3F (never fail)
+inc di ; 0x3F (never fail)
 
 AndRes8 equ (0x55&0xAA)&0xFF
 AndRes16 equ (0x5555&0xAAAA)&0xFFFF
@@ -312,7 +312,7 @@ GdEdR 0x20,AndRes32 ; 0x4B
 ALIb and,AndRes8 ; 0x4C
 AXIw and,AndRes16 ; 0x4D
 EAXId and,AndRes32 ; 0x4E
-inc dx ; 0x4F (never fail)
+inc di ; 0x4F (never fail)
 
 EbGb sub,SubRes8 ; 0x50
 GbEb sub,SubRes8 ; 0x51
@@ -331,7 +331,7 @@ GdEdR 0x28,SubRes32 ; 0x5B
 ALIb sub,SubRes8 ; 0x5C
 AXIw sub,SubRes16 ; 0x5D
 EAXId sub,SubRes32 ; 0x5E
-inc dx ; 0x5F (never fail)
+inc di ; 0x5F (never fail)
 
 XorRes8 equ (0x55^0xAA)&0xFF
 XorRes16 equ (0x5555^0xAAAA)&0xFFFF
@@ -354,7 +354,7 @@ GdEdR 0x30,XorRes32 ; 0x6B
 ALIb xor,XorRes8 ; 0x6C
 AXIw xor,XorRes16 ; 0x6D
 EAXId xor,XorRes32 ; 0x6E
-inc dx ; 0x6F (never fail)
+inc di ; 0x6F (never fail)
 
 CmpRes8 equ 0x55
 CmpRes16 equ 0x5555
@@ -377,34 +377,37 @@ GdEdR 0x38,CmpRes32 ; 0x7B
 ALIb cmp,CmpRes8 ; 0x7C
 AXIw cmp,CmpRes16 ; 0x7D
 EAXId cmp,CmpRes32 ; 0x7E
-inc dx ; 0x7F (never fail)
+inc di ; 0x7F (never fail)
 
 ; 80-83 tests
 %macro EbIb 2
 mov byte [0], 0x55
+clc
 %1 byte [0], 0xAA
 cmp byte [0], %2
 jnz fail
-inc dx
+inc di
 %endmacro
 
 %macro EbIb2 2
 mov byte [0], 0x55
+clc
 ; opcode
 db 0x80
 ; modrm
-db 0x06
+db 0x06 | %1
 ; displacement
 dw 0x0000
 ; immediate
 db 0xAA
 cmp byte [0], %2
 jnz fail
-inc dx
+inc di
 %endmacro
 
 %macro EbIbR 2
 mov bl, 0x55
+clc
 ; opcode -- 0x80
 db 0x80
 ; ModR/M: c4 
@@ -416,11 +419,12 @@ db 0xC3 | %1
 db 0xAA
 cmp bl, %2
 jnz fail
-inc dx
+inc di
 %endmacro
 
 %macro EbIbR2 2
 mov bl, 0x55
+clc
 ; opcode -- 0x82 (it's an alias of 0x80)
 db 0x82
 ; ModR/M: c4 
@@ -432,19 +436,21 @@ db 0xC3 | %1
 db 0xAA
 cmp bl, %2
 jnz fail
-inc dx
+inc di
 %endmacro
 
 %macro EwIw 2
 mov word [0], 0x5555
+clc
 %1 word [0], 0xAAAA
 cmp word [0], %2
 jnz fail
-inc dx
+inc di
 %endmacro
 
 %macro EwIwR 2
 mov bx, 0x5555
+clc
 ; opcode
 db 0x81
 ; ModR/M: c4 
@@ -456,19 +462,21 @@ db 0xC3 | %1
 dw 0xAAAA
 cmp bx, %2
 jnz fail
-inc dx
+inc di
 %endmacro
 
 %macro EwIb 2
 mov word [0], 0x5555
+clc
 %1 word [0], 0xFFAA
 cmp word [0], %2
 jnz fail
-inc dx
+inc di
 %endmacro
 
 %macro EwIbR 2
 mov bx, 0x5555
+clc
 ; opcode
 db 0x83
 ; ModR/M: c4 
@@ -478,30 +486,32 @@ db 0x83
 db 0xC3 | %1
 ; Immediate (sign-extended to 0xFFAA)
 db 0xAA
-into 
 cmp bx, %2
 jnz fail
-inc dx
+inc di
 %endmacro
 
 %macro EdId 2
 mov dword [0], 0x55555555
+clc
 %1 dword [0], 0xAAAAAAAA
 cmp dword [0], %2
 jnz fail
-inc dx
+inc di
 %endmacro
 
 %macro EdIb 2
 mov dword [0], 0x55555555
+clc
 %1 dword [0], 0xFFFFFFAA
 cmp dword [0], %2
 jnz fail
-inc dx
+inc di
 %endmacro
 
 %macro EdIdR 2
 mov ebx, 0x55555555
+clc
 ; prefix
 db 0x66
 ; opcode
@@ -515,19 +525,23 @@ db 0xC3 | %1
 dd 0xAAAAAAAA
 cmp ebx, %2
 jnz fail
-inc dx
+inc di
 %endmacro
 
 %macro EdIb 2
 mov dword [0], 0x55555555
+clc
 %1 dword [0], 0xFFFFFFAA
 cmp dword [0], %2
 jnz fail
-inc dx
+inc di
 %endmacro
 
-%macro EwIbR 2
+%macro EdIbR 2
 mov ebx, 0x55555555
+clc
+; prefix
+db 0x66
 ; opcode
 db 0x83
 ; ModR/M: c4 
@@ -539,12 +553,11 @@ db 0xC3 | %1
 db 0xAA
 cmp ebx, %2
 jnz fail
-inc dx
+inc di
 %endmacro
 
 AddRes16_2 equ (0x5555+0xFFAA)&0xFFFF
 AddRes32_2 equ (0x55555555+0xFFFFFFAA)&0xFFFFFFFF
-into
 EbIb add,AddRes8 ; 0x80
 EbIbR 0x00,AddRes8 ; 0x81
 EbIb2 0x00,AddRes8 ; 0x82
@@ -556,7 +569,123 @@ EwIbR 0x00,AddRes16_2 ; 0x87
 EdId add,AddRes32 ; 0x88
 EdIdR 0x00,AddRes32 ; 0x89
 EdIb add,AddRes32_2 ; 0x8A
-EdIb add,AddRes32_2 ; 0x8B
+EdIbR 0x00,AddRes32_2 ; 0x8B
+
+add di, 4 ; Skip 0x8C to 0x8F
+
+OrRes16_2 equ (0x5555|0xFFAA)&0xFFFF
+OrRes32_2 equ (0x55555555|0xFFFFFFAA)&0xFFFFFFFF
+EbIb or,OrRes8 ; 0x90
+EbIbR 0x08,OrRes8 ; 0x91
+EbIb2 0x08,OrRes8 ; 0x92
+EbIbR2 0x08,OrRes8 ; 0x93
+EwIw or,OrRes16 ; 0x94
+EwIwR 0x08,OrRes16 ; 0x95
+EwIb or,OrRes16_2 ; 0x96
+EwIbR 0x08,OrRes16_2 ; 0x97
+EdId or,OrRes32 ; 0x98
+EdIdR 0x08,OrRes32 ; 0x99
+EdIb or,OrRes32_2 ; 0x9A
+EdIbR 0x08,OrRes32_2 ; 0x9B
+
+add di, 4 ; Skip 0x9C to 0x9F
+
+EbIb adc,AddRes8 ; 0xA0
+EbIbR 0x10,AddRes8 ; 0xA1
+EbIb2 0x10,AddRes8 ; 0xA2
+EbIbR2 0x10,AddRes8 ; 0xA3
+EwIw adc,AddRes16 ; 0xA4
+EwIwR 0x10,AddRes16 ; 0xA5
+EwIb adc,AddRes16_2 ; 0xA6
+EwIbR 0x10,AddRes16_2 ; 0xA7
+EdId adc,AddRes32 ; 0xA8
+EdIdR 0x10,AddRes32 ; 0xA9
+EdIb adc,AddRes32_2 ; 0xAA
+EdIbR 0x10,AddRes32_2 ; 0xAB
+
+add di, 4 ; Skip 0xAC to 0xAF
+
+SubRes16_2 equ (0x5555-0xFFAA)&0xFFFF
+SubRes32_2 equ (0x55555555-0xFFFFFFAA)&0xFFFFFFFF
+EbIb sbb,SubRes8 ; 0xB0
+EbIbR 0x18,SubRes8 ; 0xB1
+EbIb2 0x18,SubRes8 ; 0xB2
+EbIbR2 0x18,SubRes8 ; 0xB3
+EwIw sbb,SubRes16 ; 0xB4
+EwIwR 0x18,SubRes16 ; 0xB5
+EwIb sbb,SubRes16_2 ; 0xB6
+EwIbR 0x18,SubRes16_2 ; 0xB7
+EdId sbb,SubRes32 ; 0xB8
+EdIdR 0x18,SubRes32 ; 0xB9
+EdIb sbb,SubRes32_2 ; 0xBA
+EdIbR 0x18,SubRes32_2 ; 0xBB
+
+add di, 4 ; Skip 0xBC to 0xBF
+
+AndRes16_2 equ (0x5555&0xFFAA)&0xFFFF
+AndRes32_2 equ (0x55555555&0xFFFFFFAA)&0xFFFFFFFF
+EbIb and,AndRes8 ; 0xC0
+EbIbR 0x20,AndRes8 ; 0xC1
+EbIb2 0x20,AndRes8 ; 0xC2
+EbIbR2 0x20,AndRes8 ; 0xC3
+EwIw and,AndRes16 ; 0xC4
+EwIwR 0x20,AndRes16 ; 0xC5
+EwIb and,AndRes16_2 ; 0xC6
+EwIbR 0x20,AndRes16_2 ; 0xC7
+EdId and,AndRes32 ; 0xC8
+EdIdR 0x20,AndRes32 ; 0xC9
+EdIb and,AndRes32_2 ; 0xCA
+EdIbR 0x20,AndRes32_2 ; 0xCB
+
+add di, 4 ; Skip 0xCC to 0xCF
+
+EbIb sub,SubRes8 ; 0xD0
+EbIbR 0x28,SubRes8 ; 0xD1
+EbIb2 0x28,SubRes8 ; 0xD2
+EbIbR2 0x28,SubRes8 ; 0xD3
+EwIw sub,SubRes16 ; 0xD4
+EwIwR 0x28,SubRes16 ; 0xD5
+EwIb sub,SubRes16_2 ; 0xD6
+EwIbR 0x28,SubRes16_2 ; 0xD7
+EdId sub,SubRes32 ; 0xD8
+EdIdR 0x28,SubRes32 ; 0xD9
+EdIb sub,SubRes32_2 ; 0xDA
+EdIbR 0x28,SubRes32_2 ; 0xDB
+
+add di, 4 ; Skip 0xDC to 0xDF
+
+XorRes16_2 equ (0x5555^0xFFAA)&0xFFFF
+XorRes32_2 equ (0x55555555^0xFFFFFFAA)&0xFFFFFFFF
+
+EbIb xor,XorRes8 ; 0xE0
+EbIbR 0x30,XorRes8 ; 0xE1
+EbIb2 0x30,XorRes8 ; 0xE2
+EbIbR2 0x30,XorRes8 ; 0xE3
+EwIw xor,XorRes16 ; 0xE4
+EwIwR 0x30,XorRes16 ; 0xE5
+EwIb xor,XorRes16_2 ; 0xE6
+EwIbR 0x30,XorRes16_2 ; 0xE7
+EdId xor,XorRes32 ; 0xE8
+EdIdR 0x30,XorRes32 ; 0xE9
+EdIb xor,XorRes32_2 ; 0xEA
+EdIbR 0x30,XorRes32_2 ; 0xEB
+
+add di, 4 ; Skip 0xEC to 0xEF
+
+EbIb cmp,CmpRes8 ; 0xF0
+EbIbR 0x38,CmpRes8 ; 0xF1
+EbIb2 0x38,CmpRes8 ; 0xF2
+EbIbR2 0x38,CmpRes8 ; 0xF3
+EwIw cmp,CmpRes16 ; 0xF4
+EwIwR 0x38,CmpRes16 ; 0xF5
+EwIb cmp,CmpRes16 ; 0xF6
+EwIbR 0x38,CmpRes16 ; 0xF7
+EdId cmp,CmpRes32 ; 0xF8
+EdIdR 0x38,CmpRes32 ; 0xF9
+EdIb cmp,CmpRes32 ; 0xFA
+EdIbR 0x38,CmpRes32 ; 0xFB
+
+add di, 4 ; Skip 0xFC to 0xFF
 
 pop ds
 
@@ -567,7 +696,7 @@ fail:
     ; We failed the basic opcode tests
     pop ds
     mov si, failstr
-    push dx
+    push di
     push word 0
     call printstr
     cli
