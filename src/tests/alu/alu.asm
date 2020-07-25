@@ -724,6 +724,7 @@ print_c8_16:
     push cx ; op2
     push word 0
     push bx ; op1
+    push word 0
     push bp ; cf
     push word 0
     call printstr

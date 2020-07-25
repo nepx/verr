@@ -16,7 +16,8 @@ TESTID:
     jmp .optest
 .str: db TESTSTR, 0
 .optest:
-    ; Carry flag should already be clear at this point because of the XOR
+    push bx
+    clc
     mov vax, [TESTCASE_TBL_OP1 + bx]
     mov vcx, [TESTCASE_TBL_OP2 + di]
     mov vbx, vax
@@ -24,7 +25,7 @@ TESTID:
     TESTINSN vax, vcx
 
     ; Get flags
-    getflags dx
+    getflags dx 
 %ifdef CARRY_TEST
     xor bp, bp
     call print_c
@@ -40,6 +41,7 @@ TESTID:
     inc bp
     call print_c
 %endif
+    pop bx
     add bx, 4
     cmp bx, TESTCASES
     jnz .optest
