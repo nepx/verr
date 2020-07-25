@@ -745,47 +745,59 @@ begintest:
 %define TESTCASE_TBL_OP2 testcase8_op2
 
 %define TESTID add8
-%define TESTSTR "add8 $2+$2=$2 fl=$4"
+%define TESTSTR "add8 op1=$2 op2=$2 res=$2 fl=$4"
 %define TESTINSN add
 %include "testalu.asm"
 
 %define TESTID or8
-%define TESTSTR "or8 $2|$2=$2 fl=$4"
+%define TESTSTR "or8 op1=$2 op2=$2 res=$2 fl=$4"
 %define TESTINSN or
 %include "testalu.asm"
 
 %define CARRY_TEST
 %define TESTID adc8
-%define TESTSTR "adc8 $1+$2+$2=$2 fl=$4"
+%define TESTSTR "adc8 cf=$1 op1=$2 op2=$2 res=$2 fl=$4"
 %define TESTINSN adc
 %include "testalu.asm"
 
 %define TESTID sbb8
-%define TESTSTR "sbb8 -$1+$2-$2=$2 fl=$4"
+%define TESTSTR "sbb8 cf=$1 op1=$2 op2=$2 res=$2 fl=$4"
 %define TESTINSN sbb
 %include "testalu.asm"
 
 %undef CARRY_TEST
 
 %define TESTID and8
-%define TESTSTR "and8 $2&$2=$2 fl=$4"
+%define TESTSTR "and8 op1=$2 op2=$2 res=$2 fl=$4"
 %define TESTINSN and
 %include "testalu.asm"
 
 %define TESTID sub8
-%define TESTSTR "sub8 $2-$2=$2 fl=$4"
+%define TESTSTR "sub8 op1=$2 op2=$2 res=$2 fl=$4"
 %define TESTINSN sub
 %include "testalu.asm"
 
 %define TESTID xor8
-%define TESTSTR "xor8 $2^$2=$2 fl=$4"
+%define TESTSTR "xor8 op1=$2 op2=$2 res=$2 fl=$4"
 %define TESTINSN xor
 %include "testalu.asm"
 
 %define TESTID cmp8
-%define TESTSTR "cmp8 $2-$2 <$2> fl=$4"
+%define TESTSTR "cmp8 op1=$2 op2=$2 ignore=$2 fl=$4"
 %define TESTINSN cmp
 %include "testalu.asm"
+
+; Shift/rotate operations
+
+%undef TESTCASE_TBL_OP1 
+%undef TESTCASE_TBL_OP2
+%define TESTCASE_TBL_OP1 testcase8_ror_op1
+%define TESTCASE_TBL_OP2 testcase8_ror_op2
+
+%define TESTID ror8
+%define TESTSTR "ror8 op1=$2 op2=$2 res=$2 fl=$4"
+%define TESTINSN ror
+%include "testrot.asm"
 
 
 cli
@@ -810,6 +822,26 @@ testcase8_op2:
     dd -1
     dd -2
     dd 0x55 ; shift-mask test, odd
+
+testcase8_ror_op1:
+    dd 0x7F
+    dd 0x80 ; tests OF condition
+    dd 0x01 ; tests OF condition
+    dd 0x5D
+    dd 0x6F
+    dd 0x80
+    dd 0x09
+    dd 0xF5
+
+testcase8_ror_op2: 
+    dd 1
+    dd 0x25
+    dd 0x3B
+    dd 0x43
+    dd 0x5E
+    dd 0x96
+    dd 'H'
+    dd 'I'
 
 testcase16_op1:
     dd 0x1234 ; should check SZP
