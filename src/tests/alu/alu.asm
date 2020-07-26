@@ -7,6 +7,7 @@
 
 ; Test various operand forms
 
+_alustart: 
 ; Save DS
 push ds
 
@@ -20,7 +21,7 @@ mov ch, 0xAA
 clc
 %1 byte [0], ch
 cmp byte [0], %2
-jnz fail
+jnz .fail
 inc di
 %endmacro
 
@@ -30,7 +31,7 @@ mov byte [0], 0xAA
 clc
 %1 ch, byte [0]
 cmp ch, %2
-jnz fail
+jnz .fail
 inc di
 %endmacro
 
@@ -46,7 +47,7 @@ db %1
 ;  r/m=6 (dh - dest)
 db 0xDE
 cmp dh, %2
-jnz fail
+jnz .fail
 inc di
 %endmacro
 
@@ -62,7 +63,7 @@ db %1 | 0x02
 ;  r/m=6 (dh - src)
 db 0xDE
 cmp bl, %2
-jnz fail
+jnz .fail
 inc di
 %endmacro
 
@@ -73,7 +74,7 @@ mov cx, 0xAAAA
 clc
 %1 word [0], cx
 cmp word [0], %2
-jnz fail
+jnz .fail
 inc di
 %endmacro
 
@@ -83,7 +84,7 @@ mov word [0], 0xAAAA
 clc
 %1 cx, word [0]
 cmp cx, %2
-jnz fail
+jnz .fail
 inc di
 %endmacro
 
@@ -99,7 +100,7 @@ db %1 | 0x01
 ;  r/m=6 (si - dest)
 db 0xDE
 cmp si, %2
-jnz fail
+jnz .fail
 inc di
 %endmacro
 
@@ -115,7 +116,7 @@ db %1 | 0x03
 ;  r/m=6 (si - src)
 db 0xDE
 cmp bx, %2
-jnz fail
+jnz .fail
 inc di
 %endmacro
 
@@ -126,7 +127,7 @@ mov ecx, 0xAAAAAAAA
 clc
 %1 dword [0], ecx
 cmp dword [0], %2
-jnz fail
+jnz .fail
 inc di
 %endmacro
 
@@ -136,7 +137,7 @@ mov dword [0], 0xAAAAAAAA
 clc
 %1 ecx, dword [0]
 cmp ecx, %2
-jnz fail
+jnz .fail
 inc di
 %endmacro
 
@@ -154,7 +155,7 @@ db %1 | 0x01
 ;  r/m=6 (si - dest)
 db 0xDE
 cmp esi, %2
-jnz fail
+jnz .fail
 inc di
 %endmacro
 
@@ -172,7 +173,7 @@ db %1 | 0x03
 ;  r/m=6 (si - src)
 db 0xDE
 cmp ebx, %2
-jnz fail
+jnz .fail
 inc di
 %endmacro
 
@@ -182,7 +183,7 @@ mov al, 0x55
 ; A smart assembler (i.e. nasm) should assemble this using the one-byte +4 opcode
 %1 al, 0xAA
 cmp al, %2
-jnz fail
+jnz .fail
 inc di
 %endmacro
 
@@ -190,7 +191,7 @@ inc di
 mov ax, 0x5555
 %1 ax, 0xAAAA
 cmp ax, %2
-jnz fail
+jnz .fail
 inc di
 %endmacro
 
@@ -198,7 +199,7 @@ inc di
 mov eax, 0x55555555
 %1 eax, 0xAAAAAAAA
 cmp eax, %2
-jnz fail
+jnz .fail
 inc di
 %endmacro
 
@@ -385,7 +386,7 @@ mov byte [0], 0x55
 clc
 %1 byte [0], 0xAA
 cmp byte [0], %2
-jnz fail
+jnz .fail
 inc di
 %endmacro
 
@@ -401,7 +402,7 @@ dw 0x0000
 ; immediate
 db 0xAA
 cmp byte [0], %2
-jnz fail
+jnz .fail
 inc di
 %endmacro
 
@@ -418,7 +419,7 @@ db 0xC3 | %1
 ; Immediate
 db 0xAA
 cmp bl, %2
-jnz fail
+jnz .fail
 inc di
 %endmacro
 
@@ -435,7 +436,7 @@ db 0xC3 | %1
 ; Immediate
 db 0xAA
 cmp bl, %2
-jnz fail
+jnz .fail
 inc di
 %endmacro
 
@@ -444,7 +445,7 @@ mov word [0], 0x5555
 clc
 %1 word [0], 0xAAAA
 cmp word [0], %2
-jnz fail
+jnz .fail
 inc di
 %endmacro
 
@@ -461,7 +462,7 @@ db 0xC3 | %1
 ; Immediate
 dw 0xAAAA
 cmp bx, %2
-jnz fail
+jnz .fail
 inc di
 %endmacro
 
@@ -470,7 +471,7 @@ mov word [0], 0x5555
 clc
 %1 word [0], 0xFFAA
 cmp word [0], %2
-jnz fail
+jnz .fail
 inc di
 %endmacro
 
@@ -487,7 +488,7 @@ db 0xC3 | %1
 ; Immediate (sign-extended to 0xFFAA)
 db 0xAA
 cmp bx, %2
-jnz fail
+jnz .fail
 inc di
 %endmacro
 
@@ -496,7 +497,7 @@ mov dword [0], 0x55555555
 clc
 %1 dword [0], 0xAAAAAAAA
 cmp dword [0], %2
-jnz fail
+jnz .fail
 inc di
 %endmacro
 
@@ -505,7 +506,7 @@ mov dword [0], 0x55555555
 clc
 %1 dword [0], 0xFFFFFFAA
 cmp dword [0], %2
-jnz fail
+jnz .fail
 inc di
 %endmacro
 
@@ -524,7 +525,7 @@ db 0xC3 | %1
 ; Immediate
 dd 0xAAAAAAAA
 cmp ebx, %2
-jnz fail
+jnz .fail
 inc di
 %endmacro
 
@@ -533,7 +534,7 @@ mov dword [0], 0x55555555
 clc
 %1 dword [0], 0xFFFFFFAA
 cmp dword [0], %2
-jnz fail
+jnz .fail
 inc di
 %endmacro
 
@@ -552,7 +553,7 @@ db 0xC3 | %1
 ; Immediate (sign-extended to 0xFFFFFFAA)
 db 0xAA
 cmp ebx, %2
-jnz fail
+jnz .fail
 inc di
 %endmacro
 
@@ -693,7 +694,7 @@ mov byte [0], 0x12
 clc
 %1 byte [0], NSHIFT
 cmp byte [0], %2
-jnz fail
+jnz .fail
 inc di
 %endmacro
 
@@ -702,7 +703,7 @@ mov ah, 0x12
 clc
 %1 ah, NSHIFT
 cmp ah, %2
-jnz fail
+jnz .fail
 inc di
 %endmacro
 
@@ -712,7 +713,7 @@ mov cl, NSHIFT
 clc
 %1 byte [0], cl
 cmp byte [0], %2
-jnz fail
+jnz .fail
 inc di
 %endmacro
 
@@ -722,7 +723,7 @@ mov cl, NSHIFT
 clc
 %1 ah, cl
 cmp ah, %2
-jnz fail
+jnz .fail
 inc di
 %endmacro
 
@@ -731,7 +732,7 @@ mov byte [0], 0x12
 clc
 %1 byte [0], 1
 cmp byte [0], %2
-jnz fail
+jnz .fail
 inc di
 %endmacro
 
@@ -740,7 +741,7 @@ mov ah, 0x12
 clc
 %1 ah, 1
 cmp ah, %2
-jnz fail
+jnz .fail
 inc di
 %endmacro
 
@@ -749,7 +750,7 @@ mov word [0], 0x1234
 clc
 %1 word [0], NSHIFT
 cmp word [0], %2
-jnz fail
+jnz .fail
 inc di
 %endmacro
 
@@ -758,7 +759,7 @@ mov bx, 0x1234
 clc
 %1 bx, NSHIFT
 cmp bx, %2
-jnz fail
+jnz .fail
 inc di
 %endmacro
 
@@ -768,7 +769,7 @@ mov cl, NSHIFT
 clc
 %1 word [0], cl
 cmp word [0], %2
-jnz fail
+jnz .fail
 inc di
 %endmacro
 
@@ -778,7 +779,7 @@ mov cl, NSHIFT
 clc
 %1 bx, cl
 cmp bx, %2
-jnz fail
+jnz .fail
 inc di
 %endmacro
 
@@ -787,7 +788,7 @@ mov word [0], 0x1234
 clc
 %1 word [0], 1
 cmp word [0], %2
-jnz fail
+jnz .fail
 inc di
 %endmacro
 
@@ -796,7 +797,7 @@ mov bx, 0x1234
 clc
 %1 bx, 1
 cmp bx, %2
-jnz fail
+jnz .fail
 inc di
 %endmacro
 
@@ -805,7 +806,7 @@ mov dword [0], 0x12345678
 clc
 %1 dword [0], NSHIFT
 cmp dword [0], %2
-jnz fail
+jnz .fail
 inc di
 %endmacro
 
@@ -814,7 +815,7 @@ mov ebx, 0x12345678
 clc
 %1 ebx, NSHIFT
 cmp ebx, %2
-jnz fail
+jnz .fail
 inc di
 %endmacro
 
@@ -824,7 +825,7 @@ mov cl, NSHIFT
 clc
 %1 dword [0], cl
 cmp dword [0], %2
-jnz fail
+jnz .fail
 inc di
 %endmacro
 
@@ -834,7 +835,7 @@ mov cl, NSHIFT
 clc
 %1 ebx, cl
 cmp ebx, %2
-jnz fail
+jnz .fail
 inc di
 %endmacro
 
@@ -843,7 +844,7 @@ mov dword [0], 0x12345678
 clc
 %1 dword [0], 1
 cmp dword [0], %2
-jnz fail
+jnz .fail
 inc di
 %endmacro
 
@@ -852,7 +853,7 @@ mov ebx, 0x12345678
 clc
 %1 ebx, 1
 cmp ebx, %2
-jnz fail
+jnz .fail
 inc di
 %endmacro
 
@@ -1020,13 +1021,13 @@ pop ds
 
 jmp begintest
 
-failstr: db 'alu 0x$4 failed', 0
-fail: 
+.failstr: db 'alu 0x$4 failed', 0
+.fail: 
     ; We failed the basic opcode tests
     pop ds
-    mov si, failstr
-    push di
+    mov si, .failstr
     push word 0
+    push di
     call printstr
     cli
     hlt
@@ -1432,6 +1433,238 @@ begintest:
 %include "testalu.asm"
 
 %undef FILTERFLAGS_MACRO
+
+test_muldiv_encodings: 
+
+; Save DS; ES = DS
+push ds
+push es
+pop ds 
+
+xor di, di
+
+%macro mul_ALEb 2
+    mov al, 0x03
+    mov cl, 0xAA
+    %1 cl
+    cmp ax, %2
+    jnz .fail 
+    inc di
+
+    mov al, 0x03
+    mov byte [0], 0xAA
+    %1 byte [0]
+    cmp ax, %2
+    jnz .fail
+    inc di
+%endmacro
+
+%macro mul_AXEw 2
+    mov ax, 0x0003
+    mov cx, 0xAAAA
+    %1 cx
+    cmp ax, (%2 & 0xFFFF)
+    jnz .fail
+    cmp dx, ((%2 >> 16) & 0xFFFF)
+    jnz .fail
+    inc di
+
+    mov ax, 0x0003
+    mov word [0], 0xAAAA
+    %1 word [0]
+    cmp ax, (%2 & 0xFFFF)
+    jnz .fail
+    cmp dx, ((%2 >> 16) & 0xFFFF)
+    jnz .fail
+    inc di
+%endmacro
+
+%macro mul_EAXEd 3
+    mov eax, 0x00000003
+    mov ecx, 0xAAAAAAAA
+    %1 ecx
+    cmp eax, %3
+    jnz .fail
+    cmp edx, %2
+    jnz .fail
+    inc di
+
+    mov eax, 0x00000003
+    mov dword [0], 0xAAAAAAAA
+    %1 dword [0]
+    cmp eax, %3
+    jnz .fail
+    cmp edx, %2
+    jnz .fail
+    inc di
+%endmacro
+
+; Test all imul encodings
+mul_ALEb imul,0xFEFE ; 0x00, 0x01
+mul_AXEw imul,0xFFFEFFFE ; 0x02, 0x03
+mul_EAXEd imul,0xFFFFFFFE,0xFFFFFFFE ; 0x04, 0x05
+
+; imul r16, r/m16 - 0x06
+mov ax, 0x0003
+mov cx, 0xAAAA
+imul ax, cx
+cmp ax, 0xFFFE
+jnz .fail
+inc di
+
+; 0x07
+mov ax, 0x0003
+mov word [0], 0xAAAA
+imul ax, word [0]
+cmp ax, 0xFFFE
+jnz .fail
+inc di
+
+; imul r32, r/m32 - 0x08
+mov eax, 0x00000003
+mov ecx, 0xAAAAAAAA
+imul eax, ecx
+cmp eax, 0xFFFFFFFE
+jnz .fail
+inc di
+
+; 0x09
+mov eax, 0x00000003
+mov dword [0], 0xAAAAAAAA
+imul eax, dword [0]
+cmp eax, 0xFFFFFFFE
+jnz .fail
+inc di
+
+; imul r16, r/m16, imm8 - 0x0A
+; NASM refuses to generate this instruction with an imm8, so we encode it ourselves
+mov cx, 0x0003
+; opcode
+db 0x6B
+; modrm
+;  Mod=3
+;  Reg=0 (ax - dest)
+;  R/m=1 (cx - src1)
+db 0xC1
+; imm - src2
+db 0x80
+;imul ax, cx, 0xFFFFFF80
+cmp ax, 0xFE80
+jnz .fail
+inc di
+
+; 0x0B
+mov word [0], 0x0003
+; opcode
+db 0x6B
+; modrm
+;  Mod=0
+;  Reg=0 (ax - dest)
+;  R/m=6 (disp16 - src1)
+db 0x06
+; disp16 - word [0]
+dw 0
+; imm - src2
+db 0x80
+;imul ax, cx, 0xFFFF
+;imul ax, word [0], 0x80
+cmp ax, 0xFE80
+jnz .fail
+inc di
+
+; imul r32, r/m32, imm8 - 0x0C
+mov ecx, 0x00000003
+db 0x66
+db 0x6B
+db 0xC1
+db 0x80
+cmp eax, 0xFFFFFE80
+jnz .fail
+inc di
+
+; 0x0D
+mov dword [0], 0x00000003
+db 0x66
+db 0x6B
+db 0x06
+dw 0
+db 0x80
+cmp eax, 0xFFFFFE80
+jnz .fail
+inc di
+
+; Two-operand form: reg=0, r/m=0 - 0x0E
+mov ax, 0x0003
+; opcode
+db 0x6B
+; modrm
+;  Mod=3
+;  Reg=0 (ax - dest)
+;  R/m=0 (ax - src1)
+db 0xC0
+; imm - src2
+db 0x80
+cmp ax, 0xFE80
+jnz .fail
+inc di
+
+; 32-bit version: 0x0F
+mov eax, 0x00000003
+db 0x66
+db 0x6B
+db 0xC0
+db 0x80
+cmp eax, 0xFFFFFE80
+jnz .fail
+inc di
+
+; 16-bit and 32-bit immediates, 3-operand - 0x10
+mov cx, 0x0003
+imul ax, cx, 0xAAAA
+cmp ax, 0xFFFE
+jnz .fail
+inc di
+
+; 0x11
+mov word [0], 0x0003
+imul ax, word [0], 0xAAAA
+cmp ax, 0xFFFE
+jnz .fail
+inc di
+
+; 0x12
+mov ecx, 0x00000003
+imul eax, ecx, 0xAAAAAAAA
+cmp eax, 0xFFFFFFFE
+jnz .fail
+inc di
+
+; 0x13
+mov dword [0], 0x00000003
+imul eax, dword [0], 0xAAAAAAAA
+cmp eax, 0xFFFFFFFE
+jnz .fail
+inc di
+
+; Test all mul encodings
+mul_ALEb mul,0x1FE ; 0x14, 0x15
+mul_AXEw mul,0x1FFFE ; 0x16, 0x17
+mul_EAXEd mul,1,0xFFFFFFFE ; 0x18, 0x19
+
+jmp test_muldiv_results
+
+.failstr: db "muldiv 0x$2 fail", 0
+.fail:
+    pop ds
+    mov si, .failstr
+    push word 0
+    push di
+    call printstr
+    cli 
+    hlt
+
+test_muldiv_results:
+pop ds
 
 cli
 hlt
