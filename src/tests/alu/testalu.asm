@@ -26,6 +26,11 @@ TESTID:
 
     ; Get flags
     getflags dx 
+
+%ifdef FILTERFLAGS_MACRO
+    FILTERFLAGS_MACRO
+%endif 
+
 %ifdef CARRY_TEST
     xor bp, bp
     call print_c
@@ -38,6 +43,9 @@ TESTID:
     mov vax, vbx
     TESTINSN vax, vcx
     getflags dx
+%ifdef FILTERFLAGS_MACRO
+    FILTERFLAGS_MACRO
+%endif 
     inc bp
     call print_c
 %endif
