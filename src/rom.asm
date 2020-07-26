@@ -40,7 +40,7 @@ printstr:
 
     push bp
     mov bp, sp
-    add bp, 18
+    add bp, 16
 
     cld
 

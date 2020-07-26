@@ -1033,6 +1033,7 @@ fail:
 
 ; Print, no carry tested. Format string should be in si
 print_nc8_16: 
+    push word 0
     push dx ; flags
     push word 0
     push ax ; res
@@ -1040,12 +1041,22 @@ print_nc8_16:
     push cx ; op2
     push word 0
     push bx ; op1
+    call printstr
+    add sp, 4 * 4
+    ret
+
+print_nc32: 
     push word 0
+    push dx ; flags
+    push eax ; res
+    push ecx ; op2
+    push ebx ; op1
     call printstr
     add sp, 4 * 4
     ret
 
 print_c8_16: 
+    push word 0
     push dx ; flags
     push word 0
     push ax ; res
@@ -1055,7 +1066,18 @@ print_c8_16:
     push bx ; op1
     push word 0
     push bp ; cf
+    call printstr
+    add sp, 5 * 4
+    ret
+
+print_c32: 
     push word 0
+    push dx ; flags
+    push eax ; res
+    push ecx ; op2
+    push ebx ; op1
+    push word 0
+    push bp ; cf
     call printstr
     add sp, 5 * 4
     ret
@@ -1067,17 +1089,18 @@ begintest:
     push cx
     and cl, 0x1F
     cmp cl, 1
-    jnz %%done
+    jz %%done
     and dx, ~0x800
 %%done: 
     pop cx
 %endmacro
 
 %macro SHIFT_FILTER_FLAGS 0
+    and dx, ~0x10 ; ignore af
     push cx
     and cl, 0x1F
     cmp cl, 1
-    jnz %%done
+    jz %%done
     and dx, ~0x800
 %%done: 
     pop cx
@@ -1167,6 +1190,7 @@ begintest:
 %define TESTINSN rcl
 %include "testalu.asm"
 
+%undef CARRY_TEST
 %undef FILTERFLAGS_MACRO
 %define FILTERFLAGS_MACRO SHIFT_FILTER_FLAGS
 
@@ -1180,9 +1204,8 @@ begintest:
 %define TESTINSN shr
 %include "testalu.asm"
 
-%define CARRY_TEST
 %define TESTID sar8
-%define TESTSTR "sar8 cf=$1 op1=$2 op2=$2 res=$2 fl=$4"
+%define TESTSTR "sar8 op1=$2 op2=$2 res=$2 fl=$4"
 %define TESTINSN sar
 %include "testalu.asm"
 
@@ -1280,6 +1303,8 @@ begintest:
 %undef FILTERFLAGS_MACRO
 %define FILTERFLAGS_MACRO SHIFT_FILTER_FLAGS
 
+%undef CARRY_TEST
+
 %define TESTID shl16
 %define TESTSTR "shl16 op1=$4 op2=$4 res=$4 fl=$4"
 %define TESTINSN shl
@@ -1290,10 +1315,121 @@ begintest:
 %define TESTINSN shr
 %include "testalu.asm"
 
-%define CARRY_TEST
 %define TESTID sar16
-%define TESTSTR "sar16 cf=$1 op1=$4 op2=$4 res=$4 fl=$4"
+%define TESTSTR "sar16 op1=$4 op2=$4 res=$4 fl=$4"
 %define TESTINSN sar
+
+%undef FILTERFLAGS_MACRO
+
+; Finally, 32-bit operations
+
+%undef TESTCASE_TBL_OP1 
+%undef TESTCASE_TBL_OP2
+%define TESTCASE_TBL_OP1 testcase32_op1
+%define TESTCASE_TBL_OP2 testcase32_op2
+
+%undef vax
+%undef vcx
+%undef vbx
+%define vax eax
+%define vcx ecx 
+%define vbx ebx
+
+%define print_c print_c32
+%define print_nc print_nc32
+
+%define TESTID add32
+%define TESTSTR "add32 op1=$8 op2=$8 res=$8 fl=$4"
+%define TESTINSN add
+%include "testalu.asm"
+
+%define TESTID or32
+%define TESTSTR "or32 op1=$8 op2=$8 res=$8 fl=$4"
+%define TESTINSN or
+%include "testalu.asm"
+
+%define CARRY_TEST
+%define TESTID adc32
+%define TESTSTR "adc32 cf=$1 op1=$8 op2=$8 res=$8 fl=$4"
+%define TESTINSN adc
+%include "testalu.asm"
+
+%define TESTID sbb32
+%define TESTSTR "sbb32 cf=$1 op1=$8 op2=$8 res=$8 fl=$4"
+%define TESTINSN sbb
+%include "testalu.asm"
+
+%undef CARRY_TEST
+
+%define TESTID and32
+%define TESTSTR "and32 op1=$8 op2=$8 res=$8 fl=$4"
+%define TESTINSN and
+%include "testalu.asm"
+
+%define TESTID sub32
+%define TESTSTR "sub32 op1=$8 op2=$8 res=$8 fl=$4"
+%define TESTINSN sub
+%include "testalu.asm"
+
+%define TESTID xor32
+%define TESTSTR "xor32 op1=$8 op2=$8 res=$8 fl=$4"
+%define TESTINSN xor
+%include "testalu.asm"
+
+%define TESTID cmp32
+%define TESTSTR "cmp32 op1=$8 op2=$8 ignore=$8 fl=$4"
+%define TESTINSN cmp
+%include "testalu.asm"
+
+%undef vcx
+%define vcx cl
+
+%define FILTERFLAGS_MACRO ROT_FILTER_FLAGS
+
+%undef TESTCASE_TBL_OP1 
+%undef TESTCASE_TBL_OP2
+%define TESTCASE_TBL_OP1 testcase32_ror_op1
+%define TESTCASE_TBL_OP2 testcase32_ror_op2
+
+%define TESTID ror32
+%define TESTSTR "ror32 op1=$8 op2=$8 res=$8 fl=$4"
+%define TESTINSN ror
+%include "testalu.asm"
+
+%define TESTID rol32
+%define TESTSTR "rol32 op1=$8 op2=$8 res=$8 fl=$4"
+%define TESTINSN rol
+%include "testalu.asm"
+
+%define CARRY_TEST
+%define TESTID rcr32
+%define TESTSTR "rcr32 cf=$1 op1=$8 op2=$8 res=$8 fl=$4"
+%define TESTINSN rcr
+%include "testalu.asm"
+
+%define TESTID rcl32
+%define TESTSTR "rcl32 cf=$1 op1=$8 op2=$8 res=$8 fl=$4"
+%define TESTINSN rcl
+%include "testalu.asm"
+
+%undef CARRY_TEST
+%undef FILTERFLAGS_MACRO
+%define FILTERFLAGS_MACRO SHIFT_FILTER_FLAGS
+
+%define TESTID shl32
+%define TESTSTR "shl32 op1=$8 op2=$8 res=$8 fl=$4"
+%define TESTINSN shl
+%include "testalu.asm"
+
+%define TESTID shr32
+%define TESTSTR "shr32 op1=$8 op2=$8 res=$8 fl=$4"
+%define TESTINSN shr
+%include "testalu.asm"
+
+%define TESTID sar32
+%define TESTSTR "sar32 op1=$8 op2=$8 res=$8 fl=$4"
+%define TESTINSN sar
+%include "testalu.asm"
 
 %undef FILTERFLAGS_MACRO
 
@@ -1399,3 +1535,23 @@ testcase32_op2:
     dd -1
     dd -2
     dd 0x55AA55AA ; shift-mask test, odd
+
+testcase32_ror_op1:
+    dd 0x80000000 ; tests OF condition, ROR
+    dd 0x00000001 ; tests OF condition, ROR and ROL
+    dd 0x00000002 ; tests OF condition, ROL
+    dd 0x3456789A
+    dd 0x6FF43960
+    dd 0x80000000
+    dd 0x00000009
+    dd 0xF53D9632
+
+testcase32_ror_op2: 
+    dd 0
+    dd 1
+    dd 8
+    dd 9
+    dd 16
+    dd 17
+    dd 32
+    dd 0x41
