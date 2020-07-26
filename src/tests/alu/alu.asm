@@ -1651,9 +1651,99 @@ mul_ALEb mul,0x1FE ; 0x14, 0x15
 mul_AXEw mul,0x1FFFE ; 0x16, 0x17
 mul_EAXEd mul,1,0xFFFFFFFE ; 0x18, 0x19
 
+%macro div_AXEb 3
+mov ax, 5000
+mov cl, 127
+%1 cl
+cmp al, %2
+jnz .fail
+cmp ah, %3
+jnz .fail
+inc di
+
+mov ax, 5000
+mov byte [0], 127
+%1 byte [0]
+cmp al, %2
+jnz .fail
+cmp ah, %3
+jnz .fail
+inc di
+%endmacro
+
+%macro div_EAXEw 3
+mov ax, 500000 & 0xFFFF
+mov dx, 500000 >> 16
+mov cx, 4095
+%1 cx
+cmp ax, %2
+jnz .fail
+cmp dx, %3
+jnz .fail
+inc di
+
+mov ax, 500000 & 0xFFFF
+mov dx, 500000 >> 16
+mov word [0], 4095
+%1 word [0]
+cmp ax, %2
+jnz .fail
+cmp dx, %3
+jnz .fail
+inc di
+%endmacro
+
+%macro div_EDXEAXEd 3
+mov eax, 5
+mov edx, 1
+mov ecx, 0x7FFFFFFF
+%1 ecx
+cmp eax, %2
+jnz .fail
+cmp edx, %3
+jnz .fail
+inc di
+
+mov eax, 5
+mov edx, 1
+mov dword [0], 0x7FFFFFFF
+%1 dword [0]
+cmp eax, %2
+jnz .fail
+cmp edx, %3
+jnz .fail
+inc di
+%endmacro
+
+; We might fault here, so set up a #DE handler for us to use
+xor ax, ax
+push es
+mov es, ax
+
+; If we cause a #DE right now, then jump to 0xE000:.setup_fail
+mov word [es:0], .setup_fail
+mov word [es:2], 0xE000
+
+pop es
+
+; Test all div encodings
+div_AXEb div,0x27,0x2F ; 0x1A, 0x1B
+div_EAXEw div,0x7A,0x19A ; 0x1C, 0x1D
+div_EDXEAXEd div,2,7 ; 0x1E, 0x1F
+div_AXEb idiv,0x27,0x2F ; 0x20, 0x21
+div_EAXEw idiv,0x7A,0x19A ; 0x22, 0x23
+div_EDXEAXEd idiv,2,7 ; 0x24, 0x25
+
 jmp test_muldiv_results
 
-.failstr: db "muldiv 0x$2 fail", 0
+.failstr: db "muldiv enc 0x$2 fail", 0
+; When an interrupt occurs, the CPU pushes the following values to the stack:
+; SP+0 --- IP
+; SP-2 --- CS
+; SP-4 --- EFLAGS
+.setup_fail: 
+    pop ax ; Pop old IP
+    ; At this point, CS should be at the top of the stack, and we set CS=DS for simplicity
 .fail:
     pop ds
     mov si, .failstr
@@ -1664,6 +1754,37 @@ jmp test_muldiv_results
     hlt
 
 test_muldiv_results:
+
+%macro smallmul 1
+    mov al, 5
+    mov cl, 3
+    %1 cl
+    jc .fail
+    jo .fail
+    cmp ax, 15
+    jnz .fail
+%endmacro
+
+xor di, di
+; We try three cases:
+;  - small multiply: doesn't cross into upper half, CF/OF cleared
+;  - big multiply: crosses into upper half, CF/OF not cleared
+;  - huge multiply: has to be handled with size twice as large
+smallmul imul
+
+.failstr: db "muldiv enc 0x$2 fail", 0
+.setup_fail: 
+    pop ax ; Pop old IP
+    ; At this point, CS should be at the top of the stack, and we set CS=DS for simplicity
+.fail:
+    pop ds
+    mov si, .failstr
+    push word 0
+    push di
+    call printstr
+    cli 
+    hlt
+
 pop ds
 
 cli
