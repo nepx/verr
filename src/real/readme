@@ -1,0 +1,14 @@
+TVM layout
+
+CR0 = 0x60000010 (or at least ensure that CR0.PE and CR0.PG is 0)
+
+EAX = ECX = EDX = EBX = 
+ESP = EBP = ESI = EDI = 0
+
+ES = SS = DS = FS = GS = 0
+CS:IP = 1000:0000
+
+All segment register bases are (value << 4), all limits are 0xFFFF. 
+
+EFLAGS = 2 (IF = 0)
+
